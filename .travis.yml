@@ -1,0 +1,15 @@
+env:
+  global:
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - MAGENTO_VERSION=1.9.3.3
+
+services:
+  - docker
+
+script:
+  - docker build -t bliskapaczkapl/magento_base:$MAGENTO_VERSION -t bliskapaczkapl/magento_base:latest -f magento/Dockerfile .
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  - docker push bliskapaczkapl/magento_base:$MAGENTO_VERSION
+  - if [ "$TRAVIS_BRANCH" == "master" -a "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker push bliskapaczkapl/magento_base:latest;
+    fi
