@@ -2,6 +2,7 @@ FROM debian:9
 MAINTAINER Mateusz Koszutowski <mkoszutowski@divante.pl>
 
 ENV magento_path /var/www/magento
+ENV PHP_SERVICE php7.2-fpm
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     wget \
@@ -86,6 +87,9 @@ RUN find ${magento_path} -type d -exec chmod 770 {} \; && find ${magento_path} -
     && chown -R :www-data ${magento_path}
 
 COPY magento/run /opt/run
+
+RUN sed -i -e "s/#PHP_SERVICE#/${PHP_SERVICE}/g" /opt/run \
+    && sed -i -e "s/#PHP_SERVICE#/php\/${PHP_SERVICE}/g" /etc/nginx/sites-available/magento.conf
 
 EXPOSE 80
 

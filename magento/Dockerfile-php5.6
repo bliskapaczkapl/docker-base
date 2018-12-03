@@ -3,6 +3,7 @@ MAINTAINER Mateusz Koszutowski <mkoszutowski@divante.pl>
 
 ENV magento_path /var/www/magento
 ENV MAGENTO_VERSION 1.9.3.3
+ENV PHP_SERVICE php5-fpm
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl \
@@ -73,6 +74,9 @@ RUN find ${magento_path} -type d -exec chmod 770 {} \; && find ${magento_path} -
     && chown -R :www-data ${magento_path}
 
 COPY magento/run /opt/run
+
+RUN sed -i -e "s/#PHP_SERVICE#/${PHP_SERVICE}/g" /opt/run \
+    && sed -i -e "s/#PHP_SERVICE#/${PHP_SERVICE}/g" /etc/nginx/sites-available/magento.conf
 
 EXPOSE 80
 
