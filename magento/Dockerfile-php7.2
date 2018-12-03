@@ -65,18 +65,24 @@ RUN echo "xdebug.remote_port=9000" >> /etc/php/7.2/cli/conf.d/20-xdebug.ini \
 RUN curl https://storage.googleapis.com/bliskapaczka_magento/magento-1.9.4.0-2018-11-28-04-28-56.zip -o /tmp/magento-1.9.4.0-2018-11-28-04-28-56.zip \
     && unzip -q -d /tmp/magento-1.9.4.0-2018-11-28-04-28-56 /tmp/magento-1.9.4.0-2018-11-28-04-28-56.zip \
     && mv /tmp/magento-1.9.4.0-2018-11-28-04-28-56/magento ${magento_path} \
+    && rm -f /tmp/magento-1.9.4.0-2018-11-28-04-28-56.zip \
+    && rm -rf /tmp/magento-1.9.4.0-2018-11-28-04-28-56 \
     && find ${magento_path} -type d -exec chmod 770 {} \; && find ${magento_path} -type f -exec chmod 660 {} \; \
     && chown -R :www-data ${magento_path}
 
 # Download Sample Data
 RUN curl -L https://sourceforge.net/projects/mageloads/files/assets/1.9.2.4/magento-sample-data-1.9.2.4-fix.tar.gz/download -o ${magento_path}/magento-sample-data-1.9.2.4-fix.tar.gz \
     && tar xf ${magento_path}/magento-sample-data-1.9.2.4-fix.tar.gz -C ${magento_path} \
-    && rsync -avzhq ${magento_path}/magento-sample-data-1.9.2.4/ ${magento_path}
+    && rm -f ${magento_path}/magento-sample-data-1.9.2.4-fix.tar.gz \
+    && rsync -avzhq ${magento_path}/magento-sample-data-1.9.2.4/ ${magento_path} \
+    && rm -rf ${magento_path}/magento-sample-data-1.9.2.4
 
 # Download Magento Translations for Polish
 RUN curl -L https://github.com/SnowdogApps/Magento-Translation-pl_PL/archive/master.zip -o /tmp/magento-translation-pl_pl.zip \
-    && unzip -o /tmp/magento-translation-pl_pl.zip -d /tmp/ \
-    && rsync -avzhq /tmp/Magento-Translation-pl_PL-master/ ${magento_path}/app/locale/
+    && unzip -q -o /tmp/magento-translation-pl_pl.zip -d /tmp/ \
+    && rm -f /tmp/magento-translation-pl_pl.zip \
+    && rsync -avzhq /tmp/Magento-Translation-pl_PL-master/ ${magento_path}/app/locale/ \
+    && rm -rf /tmp/Magento-Translation-pl_PL-master
 
 # Install cron file
 COPY magento/magento/crontab /tmp/crontab
