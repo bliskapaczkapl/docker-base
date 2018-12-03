@@ -23,5 +23,7 @@ services:
 script:
   - PHP_VERSION=$(php -v | grep "^PHP" | awk '{print $2}' | sed "s/-.*//" | grep -o "^[^\.]*\.\?[^\.]*")
   - docker build -t bliskapaczkapl/magento_base:${PHP_VERSION}_${MAGENTO_VERSION} -t bliskapaczkapl/magento_base:latest -f magento/Dockerfile-php$PHP_VERSION .
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-  - docker push bliskapaczkapl/magento_base:${PHP_VERSION}_${MAGENTO_VERSION}
+  - if [ "$TRAVIS_BRANCH" == "master" -a "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push bliskapaczkapl/magento_base:${PHP_VERSION}_${MAGENTO_VERSION};
+    fi
