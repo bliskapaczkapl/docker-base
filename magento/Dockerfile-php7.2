@@ -62,9 +62,9 @@ RUN echo "xdebug.remote_port=9000" >> /etc/php/7.2/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.remote_autostart=1" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini
 
 # Magento
-RUN curl https://codeload.github.com/OpenMage/magento-mirror/tar.gz/$MAGENTO_VERSION -o /tmp/$MAGENTO_VERSION.tar.gz \
-    && tar xf /tmp/$MAGENTO_VERSION.tar.gz -C /tmp \
-    && mv /tmp/magento-mirror-$MAGENTO_VERSION ${magento_path} \
+RUN curl https://storage.googleapis.com/bliskapaczka_magento/magento-1.9.4.0-2018-11-28-04-28-56.zip -o /tmp/magento-1.9.4.0-2018-11-28-04-28-56.zip \
+    && unzip -q -d /tmp/magento-1.9.4.0-2018-11-28-04-28-56 /tmp/magento-1.9.4.0-2018-11-28-04-28-56.zip \
+    && mv /tmp/magento-1.9.4.0-2018-11-28-04-28-56/magento ${magento_path} \
     && find ${magento_path} -type d -exec chmod 770 {} \; && find ${magento_path} -type f -exec chmod 660 {} \; \
     && chown -R :www-data ${magento_path}
 
