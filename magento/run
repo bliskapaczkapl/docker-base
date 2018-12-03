@@ -6,7 +6,7 @@ function info {
 
 service cron start
 
-service php5-fpm start
+service #PHP_SERVICE# start
 
 service nginx start
 
