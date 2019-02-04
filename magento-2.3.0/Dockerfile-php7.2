@@ -21,12 +21,13 @@ RUN apt-get update \
     && docker-php-ext-install \
         pdo_mysql \
         mysqli \
-        mcrypt \
         intl \
         xsl \
         soap \
         bcmath \
         zip \
+    && pecl install mcrypt-1.0.2 \
+    && docker-php-ext-enable mcrypt \
     && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/ \
         --with-jpeg-dir=/usr/include/ \
