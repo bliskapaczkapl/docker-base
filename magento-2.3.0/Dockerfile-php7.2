@@ -55,7 +55,6 @@ RUN rm -rf /var/www/html \
 
 COPY magento-2.3.0/nginx/conf.d /etc/nginx/conf.d
 COPY magento-2.3.0/php/conf.d/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
-COPY magento-2.3.0/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN usermod -s /bin/bash www-data
 
