@@ -52,9 +52,9 @@ RUN apt-get update \
 RUN rm -rf /var/www/html \
     && rm -f /etc/nginx/conf.d/default.conf
 
-COPY dev/docker/nginx/conf.d /etc/nginx/conf.d
-COPY dev/docker/php/conf.d/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
-COPY dev/docker/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY magento-2.3.0/nginx/conf.d /etc/nginx/conf.d
+COPY magento-2.3.0/php/conf.d/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY magento-2.3.0/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN usermod -s /bin/bash www-data
 
@@ -72,14 +72,11 @@ RUN echo '#!/usr/bin/env bash' >> /usr/local/bin/composer \
 
 RUN php ${magento_path}/bin/magento sampledata:deploy
 
-COPY dev/docker/magento/styles.css ${magento_path}/pub/media/styles.css
+COPY magento-2.3.0/magento/styles.css ${magento_path}/pub/media/styles.css
 
 # Install cron file
-COPY dev/docker/magento/crontab /tmp/crontab
+COPY magento-2.3.0/magento/crontab /tmp/crontab
 RUN crontab -u www-data /tmp/crontab
-
-# Install module 
-COPY ./ ${magento_path}/app/code/Sendit/Bliskapaczka/
 
 # Fix privileges
 RUN find ${magento_path} -type d -exec chmod 777 {} \; && find ${magento_path} -type f -exec chmod 666 {} \; \
@@ -87,11 +84,7 @@ RUN find ${magento_path} -type d -exec chmod 777 {} \; && find ${magento_path} -
 
 RUN chown -R www-data:www-data /opt/composer/www-data
 
-# Install PECL extensions
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
-
-COPY dev/docker/run /opt/run
+COPY magento-2.3.0/run /opt/run
 
 EXPOSE 80
 
