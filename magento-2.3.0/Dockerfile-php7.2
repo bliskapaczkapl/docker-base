@@ -67,7 +67,7 @@ RUN echo '#!/usr/bin/env bash' >> /usr/local/bin/composer \
     && echo 'COMPOSER_MEMORY_LIMIT=-1 COMPOSER_HOME=/opt/composer/www-data /usr/local/bin/composer.phar $@' >> /usr/local/bin/composer \
     && chmod 0755 /usr/local/bin/composer \
     && /usr/local/bin/composer config -g http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8 \
-    && /usr/local/bin/composer -q create-project --repository-url=https://repo.magento.com/ magento/project-community-edition ${magento_path} \
+    && /usr/local/bin/composer -q create-project --repository-url=https://repo.magento.com/ magento/project-community-edition ${magento_path} 2.3.0 \
     && /usr/local/bin/composer config http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8
 
 RUN php ${magento_path}/bin/magento sampledata:deploy
