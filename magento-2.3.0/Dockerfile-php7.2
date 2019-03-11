@@ -74,6 +74,7 @@ RUN echo '#!/usr/bin/env bash' >> /usr/local/bin/composer \
 RUN php ${magento_path}/bin/magento sampledata:deploy
 
 COPY magento-2.3.0/magento/styles.css ${magento_path}/pub/media/styles.css
+COPY magento-2.3.0/magento/env.php ${magento_path}/app/etc/env.php
 
 # Install cron file
 COPY magento-2.3.0/magento/crontab /tmp/crontab
