@@ -17,6 +17,11 @@ sleep 10
 
 runuser -s /bin/sh -c "cd /var/www/magento && /usr/local/bin/composer config http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8" www-data
 
+info "Flush chache and generated dir"
+rm -rf $MAGENTO_PATH/var/cache/*
+rm -rf $MAGENTO_PATH/var/page_cache/*
+rm -rf $MAGENTO_PATH/generated/*
+
 if [ $(mysql -N -s -h $DB_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "select count(*) from information_schema.tables where table_schema='$MYSQL_DATABASE' and table_name='core_config_data';") -eq 1 ]; then
     info "Upgrade Magento"
 	runuser -s /bin/sh -c "php /var/www/magento/bin/magento setup:upgrade" www-data
