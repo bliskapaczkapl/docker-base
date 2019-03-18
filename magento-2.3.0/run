@@ -12,9 +12,10 @@ sed -i -e "s/DB_USER/$MYSQL_USER/g" $MAGENTO_PATH/app/etc/env.php
 sed -i -e "s/DB_PASS/$MYSQL_PASSWORD/g" $MAGENTO_PATH/app/etc/env.php
 sed -i -e "s/DB_NAME/$MYSQL_DATABASE/g" $MAGENTO_PATH/app/etc/env.php
 
-info "Sleep 10s, waiting for mysql "
+info "Sleep 10s, waiting for mysql"
 sleep 10
 
+info "Add credentials to magento packages for composer"
 runuser -s /bin/sh -c "cd /var/www/magento && /usr/local/bin/composer config http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8" www-data
 
 info "Flush chache and generated dir"
@@ -22,12 +23,13 @@ rm -rf $MAGENTO_PATH/var/cache/*
 rm -rf $MAGENTO_PATH/var/page_cache/*
 rm -rf $MAGENTO_PATH/generated/*
 
+info "Install bliskapaczka-api-client"
+runuser -s /bin/sh -c "composer require bliskapaczkapl/bliskapaczka-api-client '^3.0'" www-data
+
 if [ $(mysql -N -s -h $DB_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "select count(*) from information_schema.tables where table_schema='$MYSQL_DATABASE' and table_name='core_config_data';") -eq 1 ]; then
     info "Upgrade Magento"
 	runuser -s /bin/sh -c "php /var/www/magento/bin/magento setup:upgrade" www-data
 else
-	runuser -s /bin/sh -c "composer require bliskapaczkapl/bliskapaczka-api-client '^3.0'" www-data
-
 	info "Install Magento"
 	runuser -s /bin/sh -c "php /var/www/magento/bin/magento setup:install --base-url=http://$DOMAIN \
 	--db-host=$DB_HOST --db-name=$MYSQL_DATABASE --db-user=$MYSQL_USER --db-password=$MYSQL_PASSWORD \
@@ -56,6 +58,9 @@ else
 	Magento_WidgetSampleData \
 	Magento_WishlistSampleData" www-data
 fi
+
+info "Set deployment mode"
+runuser -s /bin/sh -c "php /var/www/magento/bin/magento deploy:mode:set developer" www-data
 
 cron
 
