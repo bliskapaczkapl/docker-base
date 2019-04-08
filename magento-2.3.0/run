@@ -23,9 +23,6 @@ rm -rf $MAGENTO_PATH/var/cache/*
 rm -rf $MAGENTO_PATH/var/page_cache/*
 rm -rf $MAGENTO_PATH/generated/*
 
-info "Install bliskapaczka-api-client"
-runuser -s /bin/sh -c "composer require bliskapaczkapl/bliskapaczka-api-client '^3.0'" www-data
-
 if [ $(mysql -N -s -h $DB_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "select count(*) from information_schema.tables where table_schema='$MYSQL_DATABASE' and table_name='core_config_data';") -eq 1 ]; then
     info "Upgrade Magento"
 	runuser -s /bin/sh -c "php /var/www/magento/bin/magento setup:upgrade" www-data
