@@ -23,6 +23,10 @@ matrix:
       env: MAGENTO_VERSION=2.2.5
     - php: 7.1
       env: MAGENTO_VERSION=1.9.3.3
+    - php: 7.1
+      env: MAGENTO_VERSION=1.9.4.0
+    - php: 7.1
+      env: MAGENTO_VERSION=2.2.5
     - php: 7.2
       env: MAGENTO_VERSION=1.9.3.3
     - php: 7.2
