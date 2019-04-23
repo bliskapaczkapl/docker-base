@@ -1,8 +1,9 @@
-FROM php:7.2-fpm
+FROM php:7.1-fpm
 
 MAINTAINER Mateusz Koszutowski <mkoszutowski@divante.pl>
 
 ENV magento_path /var/www/magento
+ENV magento_version 2.2.5
 WORKDIR ${magento_path}
 
 RUN apt-get update \
@@ -52,9 +53,9 @@ RUN apt-get update \
     && rm -rf /var/www/html \
     && rm -f /etc/nginx/conf.d/default.conf
 
-COPY magento-2.3.0/nginx/conf.d /etc/nginx/conf.d
-COPY magento-2.3.0/php/conf.d/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
-COPY magento-2.3.0/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY magento-${magento_version}/nginx/conf.d /etc/nginx/conf.d
+COPY magento-${magento_version}/php/conf.d/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY magento-${magento_version}/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install composer & create composer wrapper
 RUN usermod -s /bin/bash www-data \
@@ -73,22 +74,22 @@ USER www-data
 
 # Install Magento
 RUN /usr/local/bin/composer config -g http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8 \
-    && /usr/local/bin/composer -q create-project --repository-url=https://repo.magento.com/ magento/project-community-edition ${magento_path} 2.3.0 \
+    && /usr/local/bin/composer -q create-project --repository-url=https://repo.magento.com/ magento/project-community-edition ${magento_path} ${magento_version} \
     && /usr/local/bin/composer config http-basic.repo.magento.com bc4c30862f0179e4fb6588d87b42fabc cb1289ea2905db7d27baffcd717c6ed8 \
     && php ${magento_path}/bin/magento sampledata:deploy \
     && /usr/local/bin/composer clear-cache
 
-COPY --chown=www-data:www-data magento-2.3.0/magento/styles.css ${magento_path}/pub/media/styles.css
-COPY --chown=www-data:www-data magento-2.3.0/magento/env.php ${magento_path}/app/etc/env.php
-COPY --chown=www-data:www-data magento-2.3.0/magento/config.php ${magento_path}/app/etc/config.php
+COPY --chown=www-data:www-data magento-${magento_version}/magento/styles.css ${magento_path}/pub/media/styles.css
+COPY --chown=www-data:www-data magento-${magento_version}/magento/env.php ${magento_path}/app/etc/env.php
+COPY --chown=www-data:www-data magento-${magento_version}/magento/config.php ${magento_path}/app/etc/config.php
 
 # Install cron file
-COPY --chown=www-data:www-data magento-2.3.0/magento/crontab /tmp/crontab
+COPY --chown=www-data:www-data magento-${magento_version}/magento/crontab /tmp/crontab
 RUN crontab -u www-data /tmp/crontab
 
 USER root
 
-COPY magento-2.3.0/run /opt/run
+COPY magento-${magento_version}/run /opt/run
 
 EXPOSE 80
 
