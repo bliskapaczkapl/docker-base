@@ -79,7 +79,7 @@ RUN /usr/local/bin/composer config -g http-basic.repo.magento.com bc4c30862f0179
     && /usr/local/bin/composer clear-cache
 
 COPY --chown=www-data:www-data magento-${magento_version}/magento/styles.css ${magento_path}/pub/media/styles.css
-COPY --chown=www-data:www-data magento-${magento_version}/magento/env.php ${magento_path}/app/etc/env.php
+COPY --chown=www-data:www-data magento-${magento_version}/magento/env.php ${magento_path}/app/etc/env.php_sample
 COPY --chown=www-data:www-data magento-${magento_version}/magento/config.php ${magento_path}/app/etc/config.php
 
 # Install cron file

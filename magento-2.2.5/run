@@ -6,12 +6,6 @@ function info {
 
 MAGENTO_PATH=/var/www/magento
 
-info "Configure Magento"
-sed -i -e "s/DB_HOST/$DB_HOST/g" $MAGENTO_PATH/app/etc/env.php
-sed -i -e "s/DB_USER/$MYSQL_USER/g" $MAGENTO_PATH/app/etc/env.php
-sed -i -e "s/DB_PASS/$MYSQL_PASSWORD/g" $MAGENTO_PATH/app/etc/env.php
-sed -i -e "s/DB_NAME/$MYSQL_DATABASE/g" $MAGENTO_PATH/app/etc/env.php
-
 info "Sleep 10s, waiting for mysql"
 sleep 10
 
@@ -24,6 +18,13 @@ rm -rf $MAGENTO_PATH/var/page_cache/*
 rm -rf $MAGENTO_PATH/generated/*
 
 if [ $(mysql -N -s -h $DB_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "select count(*) from information_schema.tables where table_schema='$MYSQL_DATABASE' and table_name='core_config_data';") -eq 1 ]; then
+	cp $MAGENTO_PATH/app/etc/env.php_sample $MAGENTO_PATH/app/etc/env.php
+	info "Configure Magento"
+	sed -i -e "s/DB_HOST/$DB_HOST/g" $MAGENTO_PATH/app/etc/env.php
+	sed -i -e "s/DB_USER/$MYSQL_USER/g" $MAGENTO_PATH/app/etc/env.php
+	sed -i -e "s/DB_PASS/$MYSQL_PASSWORD/g" $MAGENTO_PATH/app/etc/env.php
+	sed -i -e "s/DB_NAME/$MYSQL_DATABASE/g" $MAGENTO_PATH/app/etc/env.php
+
     info "Upgrade Magento"
 	runuser -s /bin/sh -c "php /var/www/magento/bin/magento setup:upgrade" www-data
 else
